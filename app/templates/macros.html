@@ -1,0 +1,4 @@
+{% macro badge(s) %}<span class="badge b-{{ s }}">{{ s }}</span>{% endmacro %}
+{% macro flashes() %}{% for cat, m in get_flashed_messages(with_categories=true) %}<div class="flash {{ cat }}">{{ m }}</div>{% endfor %}{% endmacro %}
+{% macro csrf() %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endmacro %}
+{% macro post(url, label, cls='sec sm', confirm='') %}<form class="inline" method="post" action="{{ url }}" {% if confirm %}onsubmit="return confirm('{{ confirm }}')"{% endif %}>{{ csrf() }}<button class="{{ cls }}">{{ label }}</button></form>{% endmacro %}

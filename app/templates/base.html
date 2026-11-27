@@ -1,0 +1,17 @@
+{% from "macros.html" import flashes, csrf %}<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}{{ company }}{% endblock %}</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head><body>
+<div class="layout"><nav class="side"><h1>{{ company }}</h1>
+<a href="{{ url_for('staff.dashboard') }}">📊 Dashboard</a>
+<div class="sec">Customers</div>
+<a href="{{ url_for('staff.customers') }}">Customers</a><a href="{{ url_for('staff.customer_new') }}">+ New customer</a><a href="{{ url_for('staff.tickets') }}">🎫 Tickets</a>
+<div class="sec">Billing</div>
+<a href="{{ url_for('staff.invoices') }}">Invoices</a><a href="{{ url_for('staff.payments') }}">Payments</a><a href="{{ url_for('staff.wallet') }}">My wallet</a>
+{% if me.role in ('admin','distributor') %}<a href="{{ url_for('staff.team') }}">👥 Distributors / Resellers</a>{% endif %}
+<div class="sec">Reports</div>
+<a href="{{ url_for('staff.report_income') }}">Income</a><a href="{{ url_for('staff.report_users') }}">Users</a><a href="{{ url_for('staff.report_payments') }}">Payments</a>
+<a href="{{ url_for('staff.sms') }}">📩 SMS</a>
+{% if me.role == 'admin' %}<div class="sec">System</div>
+<a href="{{ url_for('staff.routers') }}">Routers</a><a href="{{ url_for('staff.monitor') }}">Live monitor</a><a href="{{ url_for('staff.packages') }}">Packages</a>
+<a href="{{ url_for('staff.settings') }}">⚙ Settings</a><a href="{{ url_for('staff.security') }}">🔐 Security log</a>{% endif %}
+<form method="post" action="{{ url_for('auth.staff_logout') }}" style="padding:12px 16px">{{ csrf() }}<button class="sec sm">Logout ({{ me.username }})</button></form></nav>
+<main class="main">{{ flashes() }}{% block body %}{% endblock %}</main></div></body></html>

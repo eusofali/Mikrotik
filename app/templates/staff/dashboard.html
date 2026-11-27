@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% from "macros.html" import badge %}{% block body %}
+<div class="top"><h2>Dashboard</h2>{% if me.role!='admin' %}<span>Wallet: <b>{{ currency }}{{ '%g'|format(me.balance) }}</b>{% if me.due %} <span class="badge b-unpaid">due {{ me.due }}</span>{% endif %}</span>{% endif %}</div>
+<div class="grid">
+<div class="stat"><b>{{ total }}</b><span>Total customers</span></div>
+<div class="stat"><b style="color:var(--ok)">{{ online }}</b><span>Online now</span></div>
+<div class="stat"><b>{{ counts.get('active',0) }}</b><span>Active</span></div>
+<div class="stat"><b>{{ counts.get('expired',0) }}</b><span>Expired</span></div>
+<div class="stat"><b>{{ counts.get('suspended',0) }}</b><span>Suspended</span></div>
+<div class="stat"><b>{{ currency }}{{ '%g'|format(today) }}</b><span>Income today</span></div>
+<div class="stat"><b>{{ currency }}{{ '%g'|format(month) }}</b><span>Income this month</span></div>
+<div class="stat"><b>{{ currency }}{{ '%g'|format(due) }}</b><span>Outstanding dues</span></div>
+<div class="stat"><b><a href="{{ url_for('staff.payments', status='review') }}">{{ review }}</a></b><span>Payments to verify</span></div>
+<div class="stat"><b><a href="{{ url_for('staff.tickets', status='open') }}">{{ open_tickets }}</a></b><span>Open tickets</span></div></div>
+<div class="card"><b>Income - last 14 days</b><div class="bar" style="margin:12px 0 24px">{% for d, v in days %}<div style="height:{{ (v / max_day * 100)|round }}%" title="{{ d }}: {{ v }}"><small>{{ d[:2] }}</small></div>{% endfor %}</div></div>
+{% if routers %}<div class="card"><b>Routers (live)</b><table><tr><th>Router</th><th>Zone</th><th>Status</th><th>CPU</th><th>Memory</th><th>PPPoE</th><th>Hotspot</th><th>Uptime</th></tr>
+{% for r in routers %}<tr data-rid="{{ r.id }}"><td>{{ r.name }}</td><td>{{ r.zone }}</td><td class="st">…</td><td class="cpu"></td><td class="mem"></td><td class="pp"></td><td class="hs"></td><td class="up"></td></tr>{% endfor %}</table></div>
+<script>document.querySelectorAll('tr[data-rid]').forEach(tr=>{const go=()=>fetch('/api/router/'+tr.dataset.rid+'/live').then(r=>r.json()).then(d=>{
+const q=c=>tr.querySelector('.'+c);if(!d.ok){q('st').innerHTML='<span class="badge b-failed">offline</span>';return}
+const r=d.resources,used=100-Math.round(r.free_memory/r.total_memory*100);q('st').innerHTML='<span class="badge b-active">online</span>';
+q('cpu').textContent=r.cpu_load+'%';q('mem').textContent=used+'%';q('pp').textContent=d.pppoe;q('hs').textContent=d.hotspot;q('up').textContent=r.uptime}).catch(()=>{});go();setInterval(go,10000)})</script>{% endif %}
+<div class="card"><b>Recent payments</b><table><tr><th>When</th><th>Customer</th><th>Method</th><th>Amount</th></tr>
+{% for p in recent %}<tr><td>{{ p.paid_at|dt }}</td><td>{{ p.customer.username }}</td><td>{{ p.method }}</td><td>{{ currency }}{{ '%g'|format(p.amount) }}</td></tr>{% endfor %}</table></div>{% endblock %}

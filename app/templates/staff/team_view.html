@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% from "macros.html" import csrf %}{% block body %}<div class="top"><h2>{{ st.name }} <small class="mut">{{ st.role }}</small></h2><span><a href="{{ url_for('staff.team_edit', sid=st.id) }}">Edit</a> · <a href="{{ url_for('staff.team') }}">← Back</a></span></div>
+<div class="grid"><div class="stat"><b>{{ currency }}{{ '%g'|format(st.balance) }}</b><span>Balance ({{ st.payment_mode }}{% if st.payment_mode=='postpaid' %}, limit {{ '%g'|format(st.credit_limit) }}{% endif %})</span></div>
+<div class="stat"><b>{{ currency }}{{ '%g'|format(st.due) }}</b><span>Dues to pay</span></div><div class="stat"><b>{{ n_cust }}</b><span>Customers</span></div>
+<div class="stat"><b>{{ ('%g'|format(st.commission_pct) ~ '%') if st.billing_model=='commission' else 'per-user' }}</b><span>Business model</span></div>
+<div class="stat"><b>{% if st.brand_slug %}<a href="/r/{{ st.brand_slug }}">/r/{{ st.brand_slug }}</a>{% else %}-{% endif %}</b><span>Branded portal</span></div></div>
+<div class="row"><form method="post" class="card">{{ csrf() }}<input type="hidden" name="action" value="topup"><b>Top-up / Recharge wallet</b><label>Amount</label><input name="amount" type="number" step="any" required><label>Note</label><input name="note"><p><button class="ok">Top-up</button></p></form>
+<form method="post" class="card">{{ csrf() }}<input type="hidden" name="action" value="payment"><b>Receive payment (clear dues)</b><label>Amount</label><input name="amount" type="number" step="any" required><label>Note</label><input name="note"><p><button>Record payment</button></p></form></div>
+{% include "staff/_ledger.html" %}{% endblock %}

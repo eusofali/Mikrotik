@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block body %}<div class="top"><h2>Packages</h2><a class="btn" href="{{ url_for('staff.package_edit') }}">+ New</a></div>
+<div class="card"><table><tr><th>Name</th><th>Type</th><th>Price</th><th>Validity</th><th>Rate</th><th>Data</th><th>Active</th><th></th></tr>
+{% for p in rows %}<tr><td>{{ p.name }}</td><td>{{ p.kind }}</td><td>{{ '%g'|format(p.price) }}</td><td>{{ p.validity_days }}d</td><td>{{ p.rate_limit }}</td><td>{{ p.data_limit_mb or '∞' }}</td><td>{{ '✔' if p.active else '✖' }}</td><td><a href="{{ url_for('staff.package_edit', pid=p.id) }}">Edit</a></td></tr>{% endfor %}</table></div>{% endblock %}

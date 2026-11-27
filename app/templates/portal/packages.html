@@ -1,0 +1,5 @@
+{% extends "portal/base.html" %}{% from "macros.html" import csrf %}{% block body %}<h2>Buy a package</h2>
+{% if not methods %}<div class="card">No payment method is configured. Please contact support.</div>{% endif %}
+<div class="grid">{% for p in packages %}<form method="post" action="{{ url_for('portal.buy', pid=p.id) }}" class="card">{{ csrf() }}<b>{{ p.name }}</b><h2 style="margin:6px 0">{{ currency }}{{ '%g'|format(p.price) }}</h2>
+<div class="mut">{{ p.validity_days }} days · {{ p.rate_limit or 'max speed' }}{% if p.data_limit_mb %} · {{ p.data_limit_mb }} MB{% endif %}</div><div class="mut">{{ p.description }}</div>
+<label>Pay with</label><select name="method">{% for m in methods %}<option value="{{ m[0] }}">{{ m[1] }}</option>{% endfor %}</select><p><button>Buy</button></p></form>{% endfor %}</div>{% endblock %}

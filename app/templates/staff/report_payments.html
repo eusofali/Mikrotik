@@ -1,0 +1,2 @@
+{% extends "base.html" %}{% from "macros.html" import badge %}{% block body %}<div class="top"><h2>Payment report</h2></div>{% include "staff/_range.html" %}
+<div class="card"><table><tr><th>Date</th><th>Customer</th><th>Method</th><th>TrxID</th><th>Amount</th><th>Net</th><th>Status</th></tr>{% for p in rows %}<tr><td>{{ p.created_at|dt }}</td><td>{{ p.customer.username }}</td><td>{{ p.method }}</td><td>{{ p.trx_id }}</td><td>{{ '%g'|format(p.amount) }}</td><td>{{ '%g'|format(p.net_amount) }}</td><td>{{ badge(p.status) }}</td></tr>{% endfor %}</table></div>{% endblock %}

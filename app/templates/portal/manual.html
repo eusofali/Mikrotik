@@ -1,0 +1,4 @@
+{% extends "portal/base.html" %}{% from "macros.html" import csrf %}{% block body %}<h2>{{ label }} Send Money</h2>
+<div class="card"><ol><li>Open your {{ label }} app and choose <b>Send Money</b>.</li><li>Send exactly <b>{{ currency }}{{ '%g'|format(p.amount) }}</b> to <b style="font-size:18px">{{ number }}</b>.</li><li>Enter the Transaction ID (TrxID) and your sending number below.</li></ol>
+<form method="post">{{ csrf() }}<label>Transaction ID *</label><input name="trx_id" required minlength="6" value="{{ p.trx_id }}"><label>Your {{ label }} number</label><input name="sender" value="{{ p.sender or me.phone }}"><p><button>Submit</button></p></form>
+<p class="mut">Your package is activated automatically as soon as the payment is confirmed.</p></div>{% endblock %}

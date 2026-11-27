@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block body %}<div class="top"><h2>Income report</h2></div>{% include "staff/_range.html" %}
+<div class="grid"><div class="stat"><b>{{ currency }}{{ '%g'|format(total) }}</b><span>Sales</span></div>{% if me.role=='admin' %}<div class="stat"><b>{{ currency }}{{ '%g'|format(net) }}</b><span>Net to ISP (after reseller share)</span></div><div class="stat"><b>{{ currency }}{{ '%g'|format(sub) }}</b><span>Reseller subscriptions</span></div>{% endif %}</div>
+<div class="row"><div class="card"><b>Daily</b><table><tr><th>Date</th><th>Sales</th><th>Net</th><th>Payments</th></tr>{% for d, v in days %}<tr><td>{{ d }}</td><td>{{ '%g'|format(v[0]) }}</td><td>{{ '%g'|format(v[1]) }}</td><td>{{ v[2] }}</td></tr>{% endfor %}</table></div>
+<div class="card"><b>By method</b><table><tr><th>Method</th><th>Amount</th></tr>{% for m, v in by_method %}<tr><td>{{ m }}</td><td>{{ '%g'|format(v) }}</td></tr>{% endfor %}</table></div></div>{% endblock %}

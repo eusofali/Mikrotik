@@ -1,0 +1,2 @@
+<div class="card"><b>Wallet ledger</b><table><tr><th>When</th><th>Type</th><th>Amount</th><th>Balance</th><th>Note</th></tr>
+{% for e in entries %}<tr><td>{{ e.created_at|dt }}</td><td>{{ e.kind }}</td><td style="color:{{ 'var(--ok)' if e.amount>=0 else 'var(--bad)' }}">{{ '%+g'|format(e.amount) }}</td><td>{{ '%g'|format(e.balance_after) }}</td><td>{{ e.note }}</td></tr>{% endfor %}</table></div>

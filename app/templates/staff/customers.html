@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% from "macros.html" import badge %}{% block body %}
+<div class="top"><h2>Customers ({{ total }})</h2><a class="btn" href="{{ url_for('staff.customer_new') }}">+ New</a></div>
+<form class="card row" method="get"><div><label>Search</label><input name="q" value="{{ kw }}" placeholder="username / name / phone"></div>
+<div><label>Status</label><select name="status"><option value="">All</option>{% for s in ['active','expired','suspended','pending'] %}<option {{ 'selected' if s==status }}>{{ s }}</option>{% endfor %}</select></div><div><button>Filter</button></div></form>
+<div class="card"><table><tr><th></th><th>User</th><th>Name</th><th>Phone</th><th>Type</th><th>Package</th><th>Status</th><th>Expires</th><th>Due</th></tr>
+{% for c in rows %}<tr><td>{{ '🟢' if c.id in online else '⚪' }}</td><td><a href="{{ url_for('staff.customer', cid=c.id) }}">{{ c.username }}</a></td><td>{{ c.name }}</td><td>{{ c.phone }}</td><td>{{ c.kind }}</td>
+<td>{{ c.package.name if c.package }}</td><td>{{ badge(c.status) }}</td><td>{{ c.expires_at|date }}</td><td>{{ c.due_amount or '' }}</td></tr>{% endfor %}</table>
+<p>{% if page>1 %}<a href="?page={{ page-1 }}&status={{ status }}&q={{ kw }}">← Prev</a>{% endif %} {% if page*50<total %}<a href="?page={{ page+1 }}&status={{ status }}&q={{ kw }}">Next →</a>{% endif %}</p></div>{% endblock %}

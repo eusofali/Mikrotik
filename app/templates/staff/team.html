@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% from "macros.html" import badge %}{% block body %}<div class="top"><h2>Distributors &amp; Resellers</h2><a class="btn" href="{{ url_for('staff.team_edit') }}">+ New</a></div>
+<div class="card"><table><tr><th>Name</th><th>Role</th><th>Parent</th><th>Mode</th><th>Model</th><th>Balance</th><th>Active</th></tr>
+{% for s in rows %}<tr><td><a href="{{ url_for('staff.team_view', sid=s.id) }}">{{ s.name }}</a> <small class="mut">{{ s.username }}</small></td><td>{{ s.role }}</td><td>{{ s.parent.name if s.parent }}</td><td>{{ s.payment_mode }}</td>
+<td>{{ ('commission ' ~ s.commission_pct ~ '%') if s.billing_model=='commission' else ('per-user ' ~ s.per_user_fee) }}</td><td style="color:{{ 'var(--bad)' if s.balance<0 }}">{{ '%g'|format(s.balance) }}</td><td>{{ '✔' if s.active else '✖' }}</td></tr>{% endfor %}</table></div>{% endblock %}

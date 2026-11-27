@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% from "macros.html" import badge, csrf, post %}{% block body %}
+<div class="top"><h2>{{ c.name }} <small class="mut">{{ c.username }}</small> {{ badge(c.status) }} {% if online %}<span class="badge b-active">online</span>{% endif %}</h2><a href="{{ url_for('staff.customers') }}">← Customers</a></div>
+<div class="grid">
+<div class="stat"><b>{{ c.package.name if c.package else '-' }}</b><span>Package ({{ c.kind }}, {{ c.billing_type }})</span></div>
+<div class="stat"><b>{{ c.expires_at|date }}</b><span>Expires</span></div>
+<div class="stat"><b>{{ currency }}{{ '%g'|format(c.due_amount) }}</b><span>Due</span></div>
+<div class="stat"><b>{{ c.router.name if c.router }}</b><span>Router {% if c.needs_sync %}<span class="badge b-failed" title="{{ c.sync_error }}">sync pending</span>{% endif %}</span></div>
+<div class="stat"><b>{{ c.reseller.name if c.reseller else 'ISP direct' }}</b><span>Owner</span></div></div>
+<div class="card"><b>Actions</b><div class="row" style="margin-top:8px">
+<form method="post" class="row" style="flex:2">{{ csrf() }}<input type="hidden" name="action" value="recharge"><select name="package_id">{% for p in packages %}<option value="{{ p.id }}">{{ p.name }} - {{ currency }}{{ '%g'|format(p.price) }}</option>{% endfor %}</select><button class="ok">Recharge / Activate</button></form>
+<div style="flex:3;display:flex;gap:6px;flex-wrap:wrap">
+{% for a, l, cls in [('disconnect','Disconnect','sec'),('sync','Sync router','sec'),('roaming','Toggle roaming ('+('on' if c.roaming else 'off')+')','sec'),('password','Reset password','sec')] %}
+<form method="post" class="inline">{{ csrf() }}<input type="hidden" name="action" value="{{ a }}"><button class="{{ cls }}">{{ l }}</button></form>{% endfor %}
+{% if c.status=='suspended' %}<form method="post" class="inline">{{ csrf() }}<input type="hidden" name="action" value="unsuspend"><button class="ok">Unsuspend</button></form>
+{% else %}<form method="post" class="inline">{{ csrf() }}<input type="hidden" name="action" value="suspend"><button class="bad">Suspend</button></form>{% endif %}
+<form method="post" class="inline" onsubmit="return confirm('Delete this customer?')">{{ csrf() }}<input type="hidden" name="action" value="delete"><button class="bad">Delete</button></form></div></div></div>
+<div class="row"><form method="post" class="card"><b>IP / MAC binding</b>{{ csrf() }}<input type="hidden" name="action" value="binding">
+<label>MAC address</label><input name="mac" value="{{ c.bound_mac }}" placeholder="AA:BB:CC:DD:EE:FF"><label>IP (hotspot, optional)</label><input name="ip" value="{{ c.bound_ip }}"><p><button>Save binding</button> <small class="mut">empty MAC removes it</small></p></form>
+<form method="post" class="card"><b>Edit</b>{{ csrf() }}<input type="hidden" name="action" value="edit">
+<label>Name</label><input name="name" value="{{ c.name }}" required><div class="row"><div><label>Phone</label><input name="phone" value="{{ c.phone }}"></div><div><label>Email</label><input name="email" value="{{ c.email }}"></div></div>
+<label>Address</label><input name="address" value="{{ c.address }}"><div class="row"><div><label>Billing</label><select name="billing_type"><option {{ 'selected' if c.billing_type=='prepaid' }}>prepaid</option><option {{ 'selected' if c.billing_type=='postpaid' }}>postpaid</option></select></div>
+<div><label>Monthly charge</label><input name="monthly_charge" type="number" step="any" value="{{ c.monthly_charge }}"></div></div><p><button>Save</button></p></form></div>
+<div class="card"><b>Invoices</b> <form method="post" class="row" style="margin:6px 0">{{ csrf() }}<input type="hidden" name="action" value="new_invoice"><input name="description" placeholder="Description" style="flex:3"><input name="amount" type="number" step="any" placeholder="Amount"><button class="sec">Add charge</button></form>
+<table><tr><th>No</th><th>Description</th><th>Amount</th><th>Status</th><th>Due</th><th></th></tr>{% for i in invoices %}<tr><td><a href="{{ url_for('staff.invoice', iid=i.id) }}">{{ i.number }}</a></td><td>{{ i.description }}</td><td>{{ '%g'|format(i.amount) }}</td><td>{{ badge(i.status) }}</td><td>{{ i.due_date|date }}</td>
+<td>{% if i.status=='unpaid' %}<form method="post" class="inline">{{ csrf() }}<input type="hidden" name="action" value="collect"><input type="hidden" name="invoice_id" value="{{ i.id }}"><button class="ok sm">Collect cash</button></form>{% endif %}</td></tr>{% endfor %}</table></div>
+<div class="card"><b>Payments</b><table><tr><th>When</th><th>Method</th><th>TrxID</th><th>Amount</th><th>Status</th></tr>{% for p in payments %}<tr><td>{{ p.created_at|dt }}</td><td>{{ p.method }}</td><td>{{ p.trx_id }}</td><td>{{ '%g'|format(p.amount) }}</td><td>{{ badge(p.status) }}</td></tr>{% endfor %}</table></div>
+<div class="card"><b>Login history</b><table><tr><th>Router</th><th>IP</th><th>MAC</th><th>Started</th><th>Ended</th><th>Down/Up</th></tr>{% for s in sessions %}<tr><td>{{ s.router.name if s.router }}</td><td>{{ s.ip }}</td><td>{{ s.mac }}</td><td>{{ s.started_at|dt }}</td><td>{{ s.ended_at|dt if s.ended_at else 'online' }}</td><td>{{ s.bytes_out|bytes }} / {{ s.bytes_in|bytes }}</td></tr>{% endfor %}</table></div>{% endblock %}

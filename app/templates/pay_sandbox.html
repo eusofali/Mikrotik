@@ -1,0 +1,3 @@
+{% from "macros.html" import csrf %}<!doctype html><html><head><meta charset="utf-8"><title>Sandbox gateway</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head><body>
+<form class="login" method="post"><h2>Test payment gateway</h2><p>Pay <b>{{ currency }}{{ '%g'|format(p.amount) }}</b> for invoice {{ p.invoice.number }}</p>{{ csrf() }}
+<button name="result" value="pay" class="ok">Pay now</button> <button name="result" value="fail" class="bad">Fail</button></form></body></html>

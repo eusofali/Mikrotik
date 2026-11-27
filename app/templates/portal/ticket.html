@@ -1,0 +1,3 @@
+{% extends "portal/base.html" %}{% from "macros.html" import badge, csrf %}{% block body %}<h2>Ticket #{{ t.id }}: {{ t.subject }} {{ badge(t.status) }}</h2>
+<div class="card">{% for m in t.messages %}<div class="msg {{ 'staff' if m.from_staff }}"><b>{{ m.author }}</b> <small class="mut">{{ m.created_at|dt }}</small><br>{{ m.body }}</div>{% endfor %}</div>
+<form method="post" class="card">{{ csrf() }}<label>Reply</label><textarea name="body" rows="3" required></textarea><p><button>Send</button></p></form>{% endblock %}

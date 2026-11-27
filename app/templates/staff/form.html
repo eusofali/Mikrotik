@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% from "macros.html" import csrf %}{% block body %}
+<div class="top"><h2>{{ title }}</h2><a href="{{ back }}">← Back</a></div>
+<form method="post" class="card" style="max-width:640px">{{ csrf() }}
+{% for f in fields %}<label>{{ f.label }}{% if f.required %} *{% endif %}</label>
+{% if f.type == 'select' %}<select name="{{ f.name }}">{% for v, l in f.options %}<option value="{{ v }}" {{ 'selected' if v|string == f.value|string }}>{{ l }}</option>{% endfor %}</select>
+{% else %}<input name="{{ f.name }}" type="{{ f.type }}" value="{{ f.value }}" step="any" {{ 'required' if f.required }}>{% endif %}
+{% if f.help %}<small class="mut">{{ f.help }}</small>{% endif %}{% endfor %}
+<p><button>{{ submit }}</button></p></form>{% endblock %}

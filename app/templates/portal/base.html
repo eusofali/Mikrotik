@@ -1,0 +1,7 @@
+{% from "macros.html" import flashes, csrf %}<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{ brand.display_brand if brand else company }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">{% if brand and brand.brand_color %}<style>:root{--pri:{{ brand.brand_color }}}</style>{% endif %}</head><body>
+<div style="background:var(--pri);color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+<b style="font-size:16px">{{ brand.display_brand if brand else company }}</b>
+<span style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><a style="color:#fff" href="{{ url_for('portal.dashboard') }}">Home</a><a style="color:#fff" href="{{ url_for('portal.packages') }}">Buy package</a><a style="color:#fff" href="{{ url_for('portal.history') }}">History</a><a style="color:#fff" href="{{ url_for('portal.tickets') }}">Support</a><a style="color:#fff" href="{{ url_for('portal.profile') }}">Profile</a>
+<form method="post" action="{{ url_for('portal.logout') }}" class="inline">{{ csrf() }}<button class="sec sm">Logout</button></form></span></div>
+<main style="max-width:900px;margin:16px auto;padding:0 12px">{{ flashes() }}{% block body %}{% endblock %}</main></body></html>

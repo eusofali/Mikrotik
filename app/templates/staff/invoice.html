@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% from "macros.html" import badge %}{% block body %}<div class="top noprint"><h2>Invoice</h2><span><a href="{{ url_for('staff.invoice_pdf', iid=inv.id) }}">Download PDF</a> · <a href="#" onclick="print()">Print</a></span></div>
+<div class="card" style="max-width:720px"><h2>{{ company }}</h2><p class="mut">{{ addr }}<br>{{ phone }}</p><hr><h3>Invoice {{ inv.number }} {{ badge(inv.status) }}</h3>
+<p>Date: {{ inv.created_at|date }} · Due: {{ inv.due_date|date }}</p><p><b>Bill to:</b> {{ inv.customer.name }} ({{ inv.customer.username }})<br>{{ inv.customer.phone }}<br>{{ inv.customer.address }}</p>
+<table><tr><th>Description</th><th class="right">Amount</th></tr><tr><td>{{ inv.description }}</td><td class="right">{{ currency }}{{ '%.2f'|format(inv.amount) }}</td></tr><tr><th>Total</th><th class="right">{{ currency }}{{ '%.2f'|format(inv.amount) }}</th></tr></table>
+{% if inv.paid_at %}<p>Paid on {{ inv.paid_at|dt }}</p>{% endif %}</div>{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "portal/base.html" %}{% from "macros.html" import badge, csrf %}{% block body %}
+<h2>Hello, {{ c.name }}</h2>
+<div class="grid"><div class="stat"><b>{{ badge(c.status) }}</b><span>Account status {% if online %}· <span class="badge b-active">online</span>{% endif %}</span></div>
+<div class="stat"><b>{{ c.package.name if c.package else '-' }}</b><span>Current package</span></div>
+<div class="stat"><b>{{ c.expires_at|date if c.expires_at else '-' }}</b><span>Expires {% if days_left is not none %}({{ days_left }} days left){% endif %}</span></div>
+<div class="stat"><b>{{ currency }}{{ '%g'|format(c.due_amount) }}</b><span>Due amount</span></div></div>
+{% if c.status in ('expired','pending') %}<div class="card"><b>Your internet is not active.</b> <a class="btn" href="{{ url_for('portal.packages') }}">Buy / renew package</a></div>{% endif %}
+{% if unpaid %}<div class="card"><b>Unpaid invoices</b><table>{% for i in unpaid %}<tr><td>{{ i.number }}</td><td>{{ i.description }}</td><td>{{ currency }}{{ '%g'|format(i.amount) }}</td><td>due {{ i.due_date|date }}</td><td>
+<form method="post" action="{{ url_for('portal.pay_invoice', iid=i.id) }}" class="inline">{{ csrf() }}<select name="method" style="width:auto">{% for m in methods %}<option value="{{ m[0] }}">{{ m[1] }}</option>{% endfor %}</select> <button class="sm">Pay</button></form></td></tr>{% endfor %}</table></div>{% endif %}
+<div class="card"><b>Recent payments</b><table>{% for p in recent %}<tr><td>{{ p.created_at|dt }}</td><td>{{ p.method }}</td><td>{{ currency }}{{ '%g'|format(p.amount) }}</td><td>{{ badge(p.status) }}</td></tr>{% endfor %}</table></div>{% endblock %}

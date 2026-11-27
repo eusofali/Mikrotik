@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block body %}<div class="top"><h2>My wallet</h2></div>
+<div class="grid"><div class="stat"><b>{{ currency }}{{ '%g'|format(st.balance) }}</b><span>Balance</span></div><div class="stat"><b>{{ st.payment_mode }}</b><span>Mode{% if st.payment_mode=='postpaid' %} (limit {{ '%g'|format(st.credit_limit) }}){% endif %}</span></div>
+<div class="stat"><b>{{ ('%g'|format(st.commission_pct) ~ '%') if st.billing_model=='commission' else 'per-user' }}</b><span>Model</span></div></div>{% include "staff/_ledger.html" %}{% endblock %}

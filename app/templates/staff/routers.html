@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% from "macros.html" import post %}{% block body %}<div class="top"><h2>Routers</h2><a class="btn" href="{{ url_for('staff.router_edit') }}">+ Add router</a></div>
+<div class="card"><table><tr><th>Name</th><th>Host</th><th>Zone</th><th>Roaming</th><th>Status</th><th>Last check</th><th></th></tr>
+{% for r in rows %}<tr><td>{{ r.name }} {% if r.mock %}<span class="badge">sim</span>{% endif %}</td><td>{{ r.host }}:{{ r.port }}</td><td>{{ r.zone }}</td><td>{{ '✔' if r.allow_roaming }}</td>
+<td>{% if r.last_ok is none %}-{% elif r.last_ok %}<span class="badge b-active">online</span>{% else %}<span class="badge b-failed" title="{{ r.last_error }}">offline</span>{% endif %}</td><td>{{ r.last_checked|dt }}</td>
+<td><a href="{{ url_for('staff.router_edit', rid=r.id) }}">Edit</a> {{ post(url_for('staff.router_test', rid=r.id), 'Test') }} {{ post(url_for('staff.router_delete', rid=r.id), 'Delete', 'bad sm', 'Delete router?') }}</td></tr>{% endfor %}</table></div>
+<div class="card mut">Enable the API service on MikroTik: <code>/ip service enable api</code> (8728) or <code>api-ssl</code> (8729) and create a dedicated API user with limited policies. See docs/mikrotik-setup.md.</div>{% endblock %}

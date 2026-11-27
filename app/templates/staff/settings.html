@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% from "macros.html" import csrf %}{% block body %}<div class="top"><h2>Settings</h2></div>
+<form method="post">{{ csrf() }}{% for title, keys in groups %}<div class="card"><b>{{ title }}</b><div class="row">{% for k in keys %}<div><label>{{ k }}</label><input name="{{ k }}" value="{{ vals[k] }}" {% if k in secrets %}type="password" placeholder="(unchanged)"{% endif %}></div>{% endfor %}</div></div>{% endfor %}
+<p><button>Save settings</button> <button class="sec" name="gen_token" value="1">Generate SMS-webhook token</button> {% if token_set %}<span class="mut">Webhook token is set. POST forwarded SMS to /api/sms-webhook with header X-Token.</span>{% endif %}</p></form>{% endblock %}
