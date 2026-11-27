@@ -19,6 +19,9 @@ def create_app(config=None):
     app = Flask(__name__)
     app.config.from_object(config or Config)
     app.permanent_session_lifetime = timedelta(minutes=app.config["PERMANENT_SESSION_LIFETIME_MIN"])
+    if app.config.get("TRUST_PROXY"):  # behind nginx: use X-Forwarded-For/Proto for real client IP
+        from werkzeug.middleware.proxy_fix import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
     db.init_app(app)
 
     from . import models  # noqa: F401

@@ -19,6 +19,8 @@ class Config:
     # background automation loop (seconds, 0 = disabled; use `flask automation` + cron instead)
     AUTOMATION_INTERVAL = int(os.environ.get("AUTOMATION_INTERVAL", "0"))
 
+    TRUST_PROXY = os.environ.get("TRUST_PROXY", "0") == "1"
+
     # login throttling
     MAX_LOGIN_FAILS = 5
     LOGIN_LOCK_MINUTES = 15
